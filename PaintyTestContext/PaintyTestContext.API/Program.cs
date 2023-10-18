@@ -1,20 +1,49 @@
+using Microsoft.AspNetCore.Identity;
 using PaintyTestContext.Application;
+using PaintyTestContext.Application.DTOs;
+using PaintyTestContext.Domain;
 using PaintyTestContext.Persistence;
+using PaintyTestContext.Services;
 
 var builder = WebApplication.CreateBuilder(args);
-var config = builder.Configuration;
 
 var connectionString = builder.Configuration.GetConnectionString("PostgreSQL");
 
 builder.Services.AddPersistence(connectionString);
-builder.Services.AddApplication();
+
+var jwtOptions = new JwtOptionsDto
+{
+    RefreshTokenExpires = TimeSpan.FromDays(30),
+    EXPIRES = TimeSpan.FromMinutes(30),
+    ISSUER = builder.Configuration["JWT:Issuer"]!,
+    AUDIENCE = builder.Configuration["JWT:Audience"]!,
+    KEY = builder.Configuration["JWT:SecretKey"]!
+};    
+
+builder.Services.AddIdentity<User, IdentityRole<Guid>>(options =>
+{
+    options.SignIn.RequireConfirmedAccount = true;
+}).AddEntityFrameworkStores<DBContext>();
+
+builder.Services.AddApplication(jwtOptions);
+
+builder.Services.AddSwaggerService();
 
 builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddCors(options => options.AddPolicy("AllowAllOrigins", builder =>
+{
+    builder.AllowAnyHeader();
+    builder.AllowAnyMethod();
+    builder.AllowAnyOrigin();
+}));
+
 var app = builder.Build();
+
+app.UseCors("AllowAllOrigins");
 
 if (app.Environment.IsDevelopment())
 {
