@@ -1,4 +1,13 @@
+using PaintyTestContext.Application;
+using PaintyTestContext.Persistence;
+
 var builder = WebApplication.CreateBuilder(args);
+var config = builder.Configuration;
+
+var connectionString = builder.Configuration.GetConnectionString("PostgreSQL");
+
+builder.Services.AddPersistence();
+builder.Services.AddApplication();
 
 builder.Services.AddControllers();
 
