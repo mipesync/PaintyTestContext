@@ -80,7 +80,7 @@ namespace PaintyTestContext.Application.Repositories
             }
             if (result.IsLockedOut)
             {
-                var message = "Аккаунт заблокирован";
+                const string message = "Аккаунт заблокирован";
                 _logger.LogWarning($"{user.Id} - {message}");
 
                 user.AccessFailedCount = 0;
@@ -90,7 +90,7 @@ namespace PaintyTestContext.Application.Repositories
             }
             else
             {
-                var message = "Неудачная попытка входа";
+                const string message = "Неудачная попытка входа";
                 _logger.LogWarning($"{user.Id} - {message}");
 
                 throw new BadRequestException(message);
@@ -102,7 +102,9 @@ namespace PaintyTestContext.Application.Repositories
             var user = new User
             {
                 UserName = dto.Email,
-                Email = dto.Email
+                Email = dto.Email,
+                EmailConfirmed = true,
+                DisplayedName = dto.Email
             };
 
             var getUser = await _userManager.FindByEmailAsync(dto.Email);
@@ -115,10 +117,9 @@ namespace PaintyTestContext.Application.Repositories
 
             if (result.Succeeded)
             {
-                var message = "Пользователь был зарегистрирован";
+                const string message = "Пользователь был зарегистрирован";
                 _logger.LogInformation($"{userId} - {message}");
 
-                user.EmailConfirmed = true;
                 await _userManager.UpdateAsync(user);
 
                 return new SignUpResponseDto
