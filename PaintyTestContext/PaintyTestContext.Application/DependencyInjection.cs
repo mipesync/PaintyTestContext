@@ -1,11 +1,23 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using PaintyTestContext.Application.Common.Managers;
+using PaintyTestContext.Application.DTOs;
+using PaintyTestContext.Application.Interfaces;
+using PaintyTestContext.Application.Interfaces.Repositories;
+using PaintyTestContext.Application.Repositories;
 
 namespace PaintyTestContext.Application;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddApplication(this IServiceCollection serviceCollection)
+    public static IServiceCollection AddApplication(this IServiceCollection serviceCollection, 
+        JwtOptionsDto jwtOptions)
     {
+        serviceCollection.AddTransient<IAuthRepository, AuthRepository>();
+        
+        var dbContext = serviceCollection.BuildServiceProvider().GetService<IDBContext>();
+
+        if (dbContext is not null)
+            serviceCollection.AddTransient<ITokenManager>(x => new TokenManager(jwtOptions));
         return serviceCollection;
     }
 }

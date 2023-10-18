@@ -10,4 +10,9 @@
       <ProjectReference Include="..\PaintyTestContext.Domain\PaintyTestContext.Domain.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0" />
+      <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.0.3" />
+    </ItemGroup>
+
 </Project>
