@@ -13,6 +13,21 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+using (var scope = app.Services.CreateScope())
+{
+    var serviceProvider = scope.ServiceProvider;
+    try
+    {
+        var context = serviceProvider.GetRequiredService<DBContext>();
+        DbInitializer.Initialize(context);
+    }
+    catch (Exception e)
+    {
+        var logger = serviceProvider.GetRequiredService<ILogger<Program>>();
+        logger.LogError(e, $"Произошла ошибка при инициализации базы данных: {e.Message}");
+    }
+}
+
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
