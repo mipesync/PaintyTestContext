@@ -34,11 +34,11 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddCors(options => options.AddPolicy("AllowAllOrigins", builder =>
+builder.Services.AddCors(options => options.AddPolicy("AllowAllOrigins", policyBuilder =>
 {
-    builder.AllowAnyHeader();
-    builder.AllowAnyMethod();
-    builder.AllowAnyOrigin();
+    policyBuilder.AllowAnyHeader();
+    policyBuilder.AllowAnyMethod();
+    policyBuilder.AllowAnyOrigin();
 }));
 
 var app = builder.Build();
