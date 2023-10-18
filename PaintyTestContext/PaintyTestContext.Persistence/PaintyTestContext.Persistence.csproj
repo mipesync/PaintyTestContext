@@ -10,4 +10,13 @@
       <ProjectReference Include="..\PaintyTestContext.Application\PaintyTestContext.Application.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="FluentValidation" Version="11.7.1" />
+      <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="7.0.12" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.12">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
+    </ItemGroup>
+
 </Project>
