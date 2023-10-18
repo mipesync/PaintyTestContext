@@ -1,4 +1,3 @@
-using System.Drawing;
 using System.Reflection;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -16,8 +15,6 @@ public class DBContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>, IDBC
     /// </summary>
     /// <param name="options">Первоначальные настройки</param>
     public DBContext(DbContextOptions<DBContext> options): base(options) { }
-
-    public DbSet<Permission> Permissions { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

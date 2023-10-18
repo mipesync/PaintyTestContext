@@ -12,10 +12,6 @@ public interface IDBContext
     /// Получить/установить список пользователей
     /// </summary>
     DbSet<User> Users { get; set; }
-    /// <summary>
-    /// Получить/установить список прав пользователя
-    /// </summary>
-    DbSet<Permission> Permissions { get; set; }
     
     /// <summary>
     /// Ассинхронно сохраняет сделанные изменения

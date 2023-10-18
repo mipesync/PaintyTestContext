@@ -29,10 +29,6 @@ public class User: IdentityUser<Guid>
     /// </summary>
     public string DisplayedName { get; set; } = null!;
     /// <summary>
-    /// Права пользователя
-    /// </summary>
-    public List<Permission> Permissions { get; set; } = new();
-    /// <summary>
     /// Список ссылок на изображения
     /// </summary>
     public List<string> UrlList { get; set; } = new();
