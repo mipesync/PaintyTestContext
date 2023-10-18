@@ -6,7 +6,7 @@ var config = builder.Configuration;
 
 var connectionString = builder.Configuration.GetConnectionString("PostgreSQL");
 
-builder.Services.AddPersistence();
+builder.Services.AddPersistence(connectionString);
 builder.Services.AddApplication();
 
 builder.Services.AddControllers();
