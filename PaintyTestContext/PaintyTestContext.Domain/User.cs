@@ -31,9 +31,9 @@ public class User: IdentityUser<Guid>
     /// <summary>
     /// Список ссылок на изображения
     /// </summary>
-    public List<string> UrlList { get; set; } = new();
+    public string[]? UrlList { get; set; }
     /// <summary>
     /// Список идентификаторов друзей пользователя
     /// </summary>
-    public List<Guid> FriendsIdList { get; set; } = new();
+    public Guid[]? FriendsIdList { get; set; }
 }

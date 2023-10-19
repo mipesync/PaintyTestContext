@@ -13,8 +13,9 @@ public interface IUserRepository
     /// Получить пользователя по идентификатору
     /// </summary>
     /// <param name="userId">Идентификатор пользователя</param>
+    /// <param name="hostUrl">Домен API</param>
     /// <returns><see cref="GetUserByIdResponseDto"/></returns>
-    Task<GetUserByIdResponseDto> GetById(Guid userId);
+    Task<GetUserByIdResponseDto> GetById(Guid userId, string hostUrl);
     
     /// <summary>
     /// Обновить имя пользователя

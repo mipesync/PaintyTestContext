@@ -12,9 +12,9 @@ public class GetUserByIdResponseDto
     /// <summary>
     /// Количество друзей
     /// </summary>
-    public int FriendsCount { get; set; } = 0;
+    public int FriendsCount { get; set; }
     /// <summary>
     /// Список ссылок на изображения
     /// </summary>
-    public List<string> ImagesUrlsList { get; set; } = new();
+    public List<ImageLookup>? ImagesUrlsList { get; set; }
 }
