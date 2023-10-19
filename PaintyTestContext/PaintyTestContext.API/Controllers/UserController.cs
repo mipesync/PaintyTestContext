@@ -1,8 +1,6 @@
 ﻿using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using PaintyTestContext.Application.DTOs.AuthDTOs;
-using PaintyTestContext.Application.DTOs.AuthDTOs.ResponseDTOs;
 using PaintyTestContext.Application.DTOs.UserDTOs;
 using PaintyTestContext.Application.DTOs.UserDTOs.ResponseDTOs;
 using PaintyTestContext.Application.Interfaces.Repositories;
@@ -63,7 +61,7 @@ public class UserController : Controller
     [SwaggerResponse(statusCode: StatusCodes.Status500InternalServerError, type: typeof(ErrorModel))]
     public async Task<IActionResult> GetById([FromRoute] Guid userId)
     {
-        var result = await _userRepository.GetById(userId, UrlRaw);
+        var result = await _userRepository.GetById(userId, hostUrl: UrlRaw);
             
         return Ok(result);
     }
@@ -83,6 +81,66 @@ public class UserController : Controller
     {
         await _userRepository.UpdateName(dto, CurrentUserId);
             
+        return Ok();
+    }
+    
+    /// <summary>
+    /// Получить изображения
+    /// </summary>
+    /// <param name="userId">Идентификатор владельца изображений</param>
+    /// <returns><see cref="GetImagesResponseDto"/></returns>
+    /// <response code="200">Запрос выполнен успешно</response>
+    /// <response code="403">Отображение изображений запрещено</response>
+    /// <response code="404">Пользователь не найден</response>
+    /// <response code="500">Внутренняя ошибка сервера</response>
+    [HttpGet("{userId:guid}/images")]
+    [SwaggerResponse(statusCode: StatusCodes.Status200OK, type: typeof(GetImagesResponseDto))]
+    [SwaggerResponse(statusCode: StatusCodes.Status403Forbidden, type: typeof(ErrorModel))]
+    [SwaggerResponse(statusCode: StatusCodes.Status404NotFound, type: typeof(ErrorModel))]
+    [SwaggerResponse(statusCode: StatusCodes.Status500InternalServerError, type: typeof(ErrorModel))]
+    public async Task<IActionResult> GetImages([FromRoute] Guid userId)
+    {
+        var result = await _userRepository.GetImages(CurrentUserId, ownerId: userId, hostUrl: UrlRaw);
+            
+        return Ok(result);
+    }
+
+    /// <summary>
+    /// Загрузить новое изображение
+    /// </summary>
+    /// <param name="dto">Входные данные</param>
+    /// <returns>Ссылка на загруженное изображение</returns>
+    /// <response code="200">Запрос выполнен успешно</response>
+    /// <response code="404">Пользователь не найден</response>
+    /// <response code="500">Внутренняя ошибка сервера</response>
+    [HttpPost("/images")]
+    [SwaggerResponse(statusCode: StatusCodes.Status200OK, type: typeof(GetImagesResponseDto))]
+    [SwaggerResponse(statusCode: StatusCodes.Status404NotFound, type: typeof(ErrorModel))]
+    [SwaggerResponse(statusCode: StatusCodes.Status500InternalServerError, type: typeof(ErrorModel))]
+    public async Task<IActionResult> UploadImage([FromForm] UploadImageDto dto)
+    {
+        var result =
+            await _userRepository.UploadImage(CurrentUserId, dto.Image, _environment.WebRootPath, hostUrl: UrlRaw);
+
+        return Ok(result);
+    }
+
+    /// <summary>
+    /// Удалить изображение
+    /// </summary>
+    /// <param name="fileName">Название удаляемоего изображения</param>
+    /// <returns>Ссылка на загруженное изображение</returns>
+    /// <response code="200">Запрос выполнен успешно</response>
+    /// <response code="404">Пользователь не найден</response>
+    /// <response code="500">Внутренняя ошибка сервера</response>
+    [HttpDelete("/images/{fileName}")]
+    [SwaggerResponse(statusCode: StatusCodes.Status200OK, type: typeof(GetImagesResponseDto))]
+    [SwaggerResponse(statusCode: StatusCodes.Status404NotFound, type: typeof(ErrorModel))]
+    [SwaggerResponse(statusCode: StatusCodes.Status500InternalServerError, type: typeof(ErrorModel))]
+    public async Task<IActionResult> RemoveImage([FromRoute] string fileName)
+    {
+        await _userRepository.RemoveImage(CurrentUserId, fileName, _environment.WebRootPath);
+
         return Ok();
     }
 }

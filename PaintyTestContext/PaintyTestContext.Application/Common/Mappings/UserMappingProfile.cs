@@ -13,6 +13,6 @@ public class UserMappingProfile : Profile
     {
         CreateMap<User, GetUserByIdResponseDto>(MemberList.Source)
             .ForMember(dto => dto.FriendsCount, opt => 
-                opt.MapFrom(user => user.FriendsIdList == null ? 0 : user.FriendsIdList.Length));
+                opt.MapFrom(user => user.FriendsIdList == null ? 0 : user.FriendsIdList.Count));
     }
 }

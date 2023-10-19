@@ -38,4 +38,9 @@
       <ProjectReference Include="..\PaintyTestContext.Persistence\PaintyTestContext.Persistence.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="wwwroot\" />
+      <Folder Include="wwwroot\f80d3e10-8de2-4075-80b2-e3753dfcab0a\" />
+    </ItemGroup>
+
 </Project>

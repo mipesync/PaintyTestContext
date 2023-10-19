@@ -28,12 +28,14 @@ public class User: IdentityUser<Guid>
     /// Может быть либо полным имем, либо адресом электронной почты
     /// </summary>
     public string DisplayedName { get; set; } = null!;
+
     /// <summary>
     /// Список ссылок на изображения
     /// </summary>
-    public string[]? UrlList { get; set; }
+    public List<string> UrlList { get; set; } = new();
+
     /// <summary>
     /// Список идентификаторов друзей пользователя
     /// </summary>
-    public Guid[]? FriendsIdList { get; set; }
+    public List<Guid> FriendsIdList { get; set; } = new();
 }

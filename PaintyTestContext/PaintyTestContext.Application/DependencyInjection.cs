@@ -1,4 +1,6 @@
 ﻿using System.Reflection;
+using lightning_shop.Application.Interfaces;
+using lightning_shop.Persistence.Services;
 using Microsoft.Extensions.DependencyInjection;
 using PaintyTestContext.Application.Common.Managers;
 using PaintyTestContext.Application.DTOs;
@@ -10,18 +12,19 @@ namespace PaintyTestContext.Application;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddApplication(this IServiceCollection serviceCollection, 
+    public static void AddApplication(this IServiceCollection serviceCollection,
         JwtOptionsDto jwtOptions)
     {
         serviceCollection.AddAutoMapper(Assembly.GetExecutingAssembly());
         
         serviceCollection.AddTransient<IAuthRepository, AuthRepository>();
         serviceCollection.AddTransient<IUserRepository, UserRepository>();
+
+        serviceCollection.AddSingleton<IFileUploader, FileUploader>();
         
         var dbContext = serviceCollection.BuildServiceProvider().GetService<IDBContext>();
 
         if (dbContext is not null)
             serviceCollection.AddTransient<ITokenManager>(x => new TokenManager(jwtOptions));
-        return serviceCollection;
     }
 }

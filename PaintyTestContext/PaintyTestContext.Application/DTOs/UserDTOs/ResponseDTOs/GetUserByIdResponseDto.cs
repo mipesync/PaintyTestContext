@@ -17,8 +17,4 @@ public class GetUserByIdResponseDto
     /// Количество друзей
     /// </summary>
     public int FriendsCount { get; set; }
-    /// <summary>
-    /// Список ссылок на изображения
-    /// </summary>
-    public List<ImageLookup>? ImagesUrlsList { get; set; }
 }

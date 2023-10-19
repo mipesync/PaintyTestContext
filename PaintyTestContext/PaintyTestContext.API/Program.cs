@@ -26,6 +26,8 @@ builder.Services.AddIdentity<User, IdentityRole<Guid>>(options =>
     options.SignIn.RequireConfirmedAccount = true;
 }).AddEntityFrameworkStores<DBContext>();
 
+builder.Services.AddAuthenticationService(jwtOptions);
+
 builder.Services.AddApplication(jwtOptions);
 
 builder.Services.AddSwaggerService();
@@ -69,8 +71,11 @@ using (var scope = app.Services.CreateScope())
 
 app.UseExceptionMiddleware();
 
+app.UseStaticFiles();
+
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

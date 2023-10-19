@@ -36,8 +36,6 @@ public class UserRepository : IUserRepository
             throw new NotFoundException(user);
 
         var mappedUser = _mapper.Map<GetUserByIdResponseDto>(user);
-
-        mappedUser.ImagesUrlsList = UrlParse(user, hostUrl);
         
         return mappedUser;
     }
@@ -69,7 +67,7 @@ public class UserRepository : IUserRepository
         if (user is null)
             throw new NotFoundException(user);
         
-        if (user.FriendsIdList is not null && user.FriendsIdList.Contains(currentUserId))
+        if (user.FriendsIdList is not null && (user.FriendsIdList.Contains(currentUserId) || currentUserId == ownerId))
             return new GetImagesResponseDto
             {
                 Images = UrlParse(user, hostUrl)
@@ -90,13 +88,13 @@ public class UserRepository : IUserRepository
         _uploader.WebRootPath = webRootPath is null
             ? throw new ArgumentException("Корневой путь проекта не может быть пустым")
             : webRootPath;
-        _uploader.AbsolutePath = "storage";
+        _uploader.AbsolutePath = user.Id.ToString();
         _uploader.File = image;
 
         var imageName = await _uploader.UploadFileAsync();
         var imagePath = UrlParse(imageName, hostUrl, currentUserId);
 
-        user.UrlList = user.UrlList?.Append(imageName).ToArray();
+        user.UrlList.Add(imageName);
         _dbContext.Users.Update(user);
         await _dbContext.SaveChangesAsync(CancellationToken.None);
 
@@ -114,10 +112,9 @@ public class UserRepository : IUserRepository
         File.Delete(Path.Combine(
             webRootPath is null
                 ? throw new ArgumentException("Корневой путь проекта не может быть пустым")
-                : webRootPath, 
-            "storage", fileName));
+                : webRootPath, user.Id.ToString(), fileName));
 
-        user.UrlList?.ToList().Remove(fileName);
+        user.UrlList.Remove(fileName);
         _dbContext.Users.Update(user);
         await _dbContext.SaveChangesAsync(CancellationToken.None);
     }

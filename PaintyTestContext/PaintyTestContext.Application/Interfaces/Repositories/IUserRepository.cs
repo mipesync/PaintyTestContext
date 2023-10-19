@@ -38,7 +38,7 @@ public interface IUserRepository
     /// </summary>
     /// <param name="currentUserId">Идентификатор текущего пользователя</param>
     /// <param name="image">Файл изображения</param>
-    /// <param name="webRootPath">Крневой путь проекта</param>
+    /// <param name="webRootPath">Корневой путь проекта</param>
     /// <param name="hostUrl">Домен API</param>
     /// <returns>Ссылка на загруженное изображение</returns>
     Task<string> UploadImage(Guid currentUserId, IFormFile image, string webRootPath, string hostUrl);
