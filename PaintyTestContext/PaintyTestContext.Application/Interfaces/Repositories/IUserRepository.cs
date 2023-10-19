@@ -22,7 +22,7 @@ public interface IUserRepository
     /// </summary>
     /// <param name="dto">Входные данные</param>
     /// <param name="currentUserId">Идентификатор текущего пользователя</param>
-    Task UpdateName(UpdateNameDto dto, string currentUserId);
+    Task UpdateName(UpdateNameDto dto, Guid currentUserId);
     
     /// <summary>
     /// Получить список ссылок на изображения пользователя

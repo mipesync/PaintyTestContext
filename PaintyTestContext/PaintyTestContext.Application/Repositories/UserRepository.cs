@@ -40,9 +40,22 @@ public class UserRepository : IUserRepository
         return mappedUser;
     }
 
-    public async Task UpdateName(UpdateNameDto dto, string currentUserId)
+    public async Task UpdateName(UpdateNameDto dto, Guid currentUserId)
     {
-        throw new NotImplementedException();
+        var user = await _dbContext.Users
+            .FirstOrDefaultAsync(u => u.Id == currentUserId, CancellationToken.None);
+        
+        if (user is null)
+            throw new NotFoundException(user);
+
+        user.FirstName = dto.FirstName;
+        user.LastName = dto.LastName;
+        user.MiddleName = dto.MiddleName;
+        user.FullName = $"{dto.LastName} {dto.FirstName} {dto.MiddleName}";
+        user.DisplayedName = $"{dto.FirstName} {dto.LastName}";
+
+        _dbContext.Users.Update(user);
+        await _dbContext.SaveChangesAsync(CancellationToken.None);
     }
 
     public async Task<GetImagesResponseDto> GetImages(Guid currentUserId, Guid ownerId)
