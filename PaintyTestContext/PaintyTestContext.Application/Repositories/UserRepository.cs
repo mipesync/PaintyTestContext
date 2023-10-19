@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
+using lightning_shop.Application.Interfaces;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using PaintyTestContext.Application.Common.Exceptions;
 using PaintyTestContext.Application.Common.Services;
@@ -17,11 +17,13 @@ public class UserRepository : IUserRepository
 {
     private readonly IDBContext _dbContext;
     private readonly IMapper _mapper;
+    private readonly IFileUploader _uploader;
 
-    public UserRepository(IDBContext dbContext, IMapper mapper)
+    public UserRepository(IDBContext dbContext, IMapper mapper, IFileUploader uploader)
     {
         _dbContext = dbContext;
         _mapper = mapper;
+        _uploader = uploader;
     }
     
     public async Task<GetUserByIdResponseDto> GetById(Guid userId, string hostUrl)
@@ -58,9 +60,22 @@ public class UserRepository : IUserRepository
         await _dbContext.SaveChangesAsync(CancellationToken.None);
     }
 
-    public async Task<GetImagesResponseDto> GetImages(Guid currentUserId, Guid ownerId)
+    public async Task<GetImagesResponseDto> GetImages(Guid currentUserId, Guid ownerId, string hostUrl)
     {
-        throw new NotImplementedException();
+        var user = await _dbContext.Users
+            .FirstOrDefaultAsync(u => u.Id == ownerId, CancellationToken.None);
+        
+        if (user is null)
+            throw new NotFoundException(user);
+        
+        if (user.FriendsIdList is not null && user.FriendsIdList.Contains(currentUserId))
+            return new GetImagesResponseDto
+            {
+                Images = UrlParse(user, hostUrl)
+            };
+
+        throw new ForbiddenException("У вас нет доступа к фотографиям пользователя, " +
+                                     "так как вы не являетесь его другом");
     }
 
     public async Task<string> UploadImage(Guid currentUserId, IFormFile image)
@@ -107,5 +122,17 @@ public class UserRepository : IUserRepository
             }));
 
         return imageLookups;
+    }
+
+    /// <summary>
+    /// Парсит названия файлов из БД в статические ссылки
+    /// </summary>
+    /// <param name="fileName">Название файла</param>
+    /// <param name="hostUrl">Домен API</param>
+    /// <param name="userId">Идентификатор владельца изображения</param>
+    /// <returns>Статическая ссылка на изображение</returns>
+    private static string UrlParse(string fileName, string hostUrl, Guid userId)
+    {
+        return UrlParser.Parse(hostUrl, userId.ToString(), fileName)!;
     }
 }

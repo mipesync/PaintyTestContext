@@ -8,5 +8,5 @@ public class GetImagesResponseDto
     /// <summary>
     /// Список ссылок на изображения
     /// </summary>
-    private List<string> ImagesUrlsList { get; set; } = new();
+    public List<ImageLookup>? Images { get; set; }
 }

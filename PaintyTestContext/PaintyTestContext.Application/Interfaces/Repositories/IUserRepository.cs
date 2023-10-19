@@ -31,7 +31,7 @@ public interface IUserRepository
     /// <param name="ownerId">Идентификатор владельца изображений</param>
     /// <returns><see cref="GetImagesResponseDto"/></returns>
     Task<GetImagesResponseDto> GetImages(Guid currentUserId, Guid ownerId);
-    
+
     /// <summary>
     /// Загрузить новое изображение
     /// </summary>
