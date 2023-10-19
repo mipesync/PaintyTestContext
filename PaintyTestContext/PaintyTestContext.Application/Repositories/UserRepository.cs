@@ -67,7 +67,7 @@ public class UserRepository : IUserRepository
         if (user is null)
             throw new NotFoundException(user);
         
-        if (user.FriendsIdList is not null && (user.FriendsIdList.Contains(currentUserId) || currentUserId == ownerId))
+        if (user.FriendsIdList.Contains(currentUserId) || currentUserId == ownerId)
             return new GetImagesResponseDto
             {
                 Images = UrlParse(user, hostUrl)
@@ -119,19 +119,47 @@ public class UserRepository : IUserRepository
         await _dbContext.SaveChangesAsync(CancellationToken.None);
     }
 
-    public async Task SendFriendRequest(Guid targetId)
+    public async Task SendFriendRequest(Guid currentUserId, Guid targetId)
     {
         throw new NotImplementedException();
     }
 
-    public async Task AddFriend(Guid targetId)
+    public async Task AddFriend(Guid currentUserId, Guid targetId)
     {
-        throw new NotImplementedException();
+        var currentUser = await _dbContext.Users
+            .FirstOrDefaultAsync(u => u.Id == currentUserId, CancellationToken.None);
+        
+        if (currentUser is null)
+            throw new NotFoundException(currentUser);
+        
+        var targetUser = await _dbContext.Users
+            .FirstOrDefaultAsync(u => u.Id == targetId, CancellationToken.None);
+        
+        if (targetUser is null)
+            throw new NotFoundException(targetUser);
+        
+        currentUser.FriendsIdList.Add(targetUser.Id);
+        _dbContext.Users.Update(currentUser);
+        await _dbContext.SaveChangesAsync(CancellationToken.None);
     }
 
-    public async Task RemoveFriend(Guid friendId)
+    public async Task RemoveFriend(Guid currentUserId, Guid friendId)
     {
-        throw new NotImplementedException();
+        var currentUser = await _dbContext.Users
+            .FirstOrDefaultAsync(u => u.Id == currentUserId, CancellationToken.None);
+        
+        if (currentUser is null)
+            throw new NotFoundException(currentUser);
+        
+        var targetUser = await _dbContext.Users
+            .FirstOrDefaultAsync(u => u.Id == currentUserId, CancellationToken.None);
+        
+        if (targetUser is null)
+            throw new NotFoundException(targetUser);
+        
+        currentUser.FriendsIdList.Remove(targetUser.Id);
+        _dbContext.Users.Update(currentUser);
+        await _dbContext.SaveChangesAsync(CancellationToken.None);
     }
     
     /// <summary>

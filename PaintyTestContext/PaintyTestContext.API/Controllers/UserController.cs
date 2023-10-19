@@ -113,7 +113,7 @@ public class UserController : Controller
     /// <response code="200">Запрос выполнен успешно</response>
     /// <response code="404">Пользователь не найден</response>
     /// <response code="500">Внутренняя ошибка сервера</response>
-    [HttpPost("/images")]
+    [HttpPost("images")]
     [SwaggerResponse(statusCode: StatusCodes.Status200OK, type: typeof(GetImagesResponseDto))]
     [SwaggerResponse(statusCode: StatusCodes.Status404NotFound, type: typeof(ErrorModel))]
     [SwaggerResponse(statusCode: StatusCodes.Status500InternalServerError, type: typeof(ErrorModel))]
@@ -133,13 +133,49 @@ public class UserController : Controller
     /// <response code="200">Запрос выполнен успешно</response>
     /// <response code="404">Пользователь не найден</response>
     /// <response code="500">Внутренняя ошибка сервера</response>
-    [HttpDelete("/images/{fileName}")]
+    [HttpDelete("images/{fileName}")]
     [SwaggerResponse(statusCode: StatusCodes.Status200OK, type: typeof(GetImagesResponseDto))]
     [SwaggerResponse(statusCode: StatusCodes.Status404NotFound, type: typeof(ErrorModel))]
     [SwaggerResponse(statusCode: StatusCodes.Status500InternalServerError, type: typeof(ErrorModel))]
     public async Task<IActionResult> RemoveImage([FromRoute] string fileName)
     {
         await _userRepository.RemoveImage(CurrentUserId, fileName, _environment.WebRootPath);
+
+        return Ok();
+    }
+
+    /// <summary>
+    /// Добавить друга
+    /// </summary>
+    /// <param name="targetId">Идентификатор пользователя, которого нужно добавить в друзья</param>
+    /// <response code="200">Запрос выполнен успешно</response>
+    /// <response code="404">Пользователь не найден</response>
+    /// <response code="500">Внутренняя ошибка сервера</response>
+    [HttpPost("friends")]
+    [SwaggerResponse(statusCode: StatusCodes.Status200OK, type: typeof(GetImagesResponseDto))]
+    [SwaggerResponse(statusCode: StatusCodes.Status404NotFound, type: typeof(ErrorModel))]
+    [SwaggerResponse(statusCode: StatusCodes.Status500InternalServerError, type: typeof(ErrorModel))]
+    public async Task<IActionResult> AddFriend([FromQuery] Guid targetId)
+    {
+        await _userRepository.AddFriend(CurrentUserId, targetId);
+
+        return Ok();
+    }
+
+    /// <summary>
+    /// Удалить друга
+    /// </summary>
+    /// <param name="targetId">Идентификатор пользователя, которого нужно удалить из друзей</param>
+    /// <response code="200">Запрос выполнен успешно</response>
+    /// <response code="404">Пользователь не найден</response>
+    /// <response code="500">Внутренняя ошибка сервера</response>
+    [HttpDelete("friends")]
+    [SwaggerResponse(statusCode: StatusCodes.Status200OK, type: typeof(GetImagesResponseDto))]
+    [SwaggerResponse(statusCode: StatusCodes.Status404NotFound, type: typeof(ErrorModel))]
+    [SwaggerResponse(statusCode: StatusCodes.Status500InternalServerError, type: typeof(ErrorModel))]
+    public async Task<IActionResult> RemoveFriend([FromQuery] Guid targetId)
+    {
+        await _userRepository.RemoveFriend(CurrentUserId, targetId);
 
         return Ok();
     }

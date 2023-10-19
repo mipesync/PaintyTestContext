@@ -54,19 +54,21 @@ public interface IUserRepository
     /// <summary>
     /// Отправить запрос на добавление нового друга
     /// </summary>
+    /// <param name="currentUserId">Идентификатор текущего пользователя</param>
     /// <param name="targetId">Идентификатор пользователя, которому нужно отправить запрос на добавление в друзья</param>
-    Task SendFriendRequest(Guid targetId);
+    Task SendFriendRequest(Guid currentUserId, Guid targetId);
     
     /// <summary>
     /// Добавить нового друга
     /// </summary>
+    /// <param name="currentUserId">Идентификатор текущего пользователя</param>
     /// <param name="targetId">Идентификатор пользователя, которого нужно добавить в друзья</param>
-    /// <returns></returns>
-    Task AddFriend(Guid targetId);
+    Task AddFriend(Guid currentUserId, Guid targetId);
     
     /// <summary>
     /// Удалить пользователя из друзей
     /// </summary>
+    /// <param name="currentUserId">Идентификатор текущего пользователя</param>
     /// <param name="friendId">Идентификатор пользователя, которого нужно удалить из друзей</param>
-    Task RemoveFriend(Guid friendId);
+    Task RemoveFriend(Guid currentUserId, Guid friendId);
 }
