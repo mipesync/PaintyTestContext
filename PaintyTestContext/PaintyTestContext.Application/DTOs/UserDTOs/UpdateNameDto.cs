@@ -1,4 +1,6 @@
-﻿namespace PaintyTestContext.Application.DTOs.UserDTOs;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace PaintyTestContext.Application.DTOs.UserDTOs;
 
 /// <summary>
 /// DTO для обновления имени пользователя
@@ -8,11 +10,14 @@ public class UpdateNameDto
     /// <summary>
     /// Имя пользователя
     /// </summary>
-    public string? FirstName { get; set; }
+    [Required(ErrorMessage = "Имя обязательно")]
+    public string FirstName { get; set; } = null!;
+
     /// <summary>
     /// Фамилия пользователя
     /// </summary>
-    public string? LastName { get; set; }
+    [Required(ErrorMessage = "Фамилия обязательна")]
+    public string LastName { get; set; } = null!;
     /// <summary>
     /// Отчество пользователя
     /// </summary>
