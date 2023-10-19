@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using PaintyTestContext.Application;
 using PaintyTestContext.Application.DTOs;
 using PaintyTestContext.Domain;
+using PaintyTestContext.Middlewares.ExceptionMiddleware;
 using PaintyTestContext.Persistence;
 using PaintyTestContext.Services;
 
@@ -65,6 +66,8 @@ using (var scope = app.Services.CreateScope())
         logger.LogError(e, $"Произошла ошибка при инициализации базы данных: {e.Message}");
     }
 }
+
+app.UseExceptionMiddleware();
 
 app.UseHttpsRedirection();
 
