@@ -78,9 +78,27 @@ public class UserRepository : IUserRepository
                                      "так как вы не являетесь его другом");
     }
 
-    public async Task<string> UploadImage(Guid currentUserId, IFormFile image)
+    public async Task<string> UploadImage(Guid currentUserId, IFormFile image, string webRootPath, string hostUrl)
     {
-        throw new NotImplementedException();
+        var user = await _dbContext.Users
+            .FirstOrDefaultAsync(u => u.Id == currentUserId, CancellationToken.None);
+        
+        if (user is null)
+            throw new NotFoundException(user);
+        
+        _uploader.WebRootPath = webRootPath is null
+            ? throw new ArgumentException("Корневой путь проекта не может быть пустым")
+            : webRootPath;
+        _uploader.AbsolutePath = "storage";
+        _uploader.File = image;
+
+        var imageName = await _uploader.UploadFileAsync();
+        var imagePath = UrlParse(imageName, hostUrl, currentUserId);
+
+        user.UrlList = user.UrlList?.Append(imageName).ToArray();
+        await _dbContext.SaveChangesAsync(CancellationToken.None);
+
+        return imagePath;
     }
 
     public async Task RemoveImage(Guid currentUserId, string fileName)
