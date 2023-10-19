@@ -63,6 +63,7 @@ public class UserRepository : IUserRepository
     public async Task<GetImagesResponseDto> GetImages(Guid currentUserId, Guid ownerId, string hostUrl)
     {
         var user = await _dbContext.Users
+            .AsNoTracking()
             .FirstOrDefaultAsync(u => u.Id == ownerId, CancellationToken.None);
         
         if (user is null)
@@ -96,14 +97,29 @@ public class UserRepository : IUserRepository
         var imagePath = UrlParse(imageName, hostUrl, currentUserId);
 
         user.UrlList = user.UrlList?.Append(imageName).ToArray();
+        _dbContext.Users.Update(user);
         await _dbContext.SaveChangesAsync(CancellationToken.None);
 
         return imagePath;
     }
 
-    public async Task RemoveImage(Guid currentUserId, string fileName)
+    public async Task RemoveImage(Guid currentUserId, string fileName, string webRootPath)
     {
-        throw new NotImplementedException();
+        var user = await _dbContext.Users
+            .FirstOrDefaultAsync(u => u.Id == currentUserId, CancellationToken.None);
+        
+        if (user is null)
+            throw new NotFoundException(user);
+        
+        File.Delete(Path.Combine(
+            webRootPath is null
+                ? throw new ArgumentException("Корневой путь проекта не может быть пустым")
+                : webRootPath, 
+            "storage", fileName));
+
+        user.UrlList?.ToList().Remove(fileName);
+        _dbContext.Users.Update(user);
+        await _dbContext.SaveChangesAsync(CancellationToken.None);
     }
 
     public async Task SendFriendRequest(Guid targetId)

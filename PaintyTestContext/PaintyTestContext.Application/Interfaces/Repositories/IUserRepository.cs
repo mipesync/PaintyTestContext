@@ -23,14 +23,15 @@ public interface IUserRepository
     /// <param name="dto">Входные данные</param>
     /// <param name="currentUserId">Идентификатор текущего пользователя</param>
     Task UpdateName(UpdateNameDto dto, Guid currentUserId);
-    
+
     /// <summary>
     /// Получить список ссылок на изображения пользователя
     /// </summary>
     /// <param name="currentUserId">Идентификатор текущего пользователя</param>
     /// <param name="ownerId">Идентификатор владельца изображений</param>
+    /// <param name="hostUrl">Домен API</param>
     /// <returns><see cref="GetImagesResponseDto"/></returns>
-    Task<GetImagesResponseDto> GetImages(Guid currentUserId, Guid ownerId);
+    Task<GetImagesResponseDto> GetImages(Guid currentUserId, Guid ownerId, string hostUrl);
 
     /// <summary>
     /// Загрузить новое изображение
@@ -47,7 +48,8 @@ public interface IUserRepository
     /// </summary>
     /// <param name="currentUserId">Идентификатор текущего пользователя</param>
     /// <param name="fileName">Название файла, который необходимо удалить</param>
-    Task RemoveImage(Guid currentUserId, string fileName);
+    /// <param name="webRootPath">Корневой путь проекта</param>
+    Task RemoveImage(Guid currentUserId, string fileName, string webRootPath);
     
     /// <summary>
     /// Отправить запрос на добавление нового друга
