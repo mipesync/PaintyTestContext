@@ -10,6 +10,11 @@ namespace PaintyTestContext.Application.Interfaces.Repositories;
 public interface IUserRepository
 {
     /// <summary>
+    /// Получить список всех пользователей
+    /// </summary>
+    /// <returns><see cref="List{FriendLookup}"/></returns>
+    Task<List<FriendLookup>> GetAll();
+    /// <summary>
     /// Получить пользователя по идентификатору
     /// </summary>
     /// <param name="userId">Идентификатор пользователя</param>

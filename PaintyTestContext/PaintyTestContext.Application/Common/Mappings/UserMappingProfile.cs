@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using PaintyTestContext.Application.DTOs.UserDTOs;
 using PaintyTestContext.Application.DTOs.UserDTOs.ResponseDTOs;
 using PaintyTestContext.Domain;
 
@@ -11,8 +12,7 @@ public class UserMappingProfile : Profile
 {
     public UserMappingProfile()
     {
-        CreateMap<User, GetUserByIdResponseDto>(MemberList.Source)
-            .ForMember(dto => dto.FriendsCount, opt => 
-                opt.MapFrom(user => user.FriendsIdList == null ? 0 : user.FriendsIdList.Count));
+        CreateMap<User, GetUserByIdResponseDto>(MemberList.Source);
+        CreateMap<User, FriendLookup>(MemberList.Source);
     }
 }

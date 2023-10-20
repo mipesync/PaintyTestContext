@@ -28,10 +28,7 @@ public class UserController : Controller
         get
         {
             var claimNameId = Request.HttpContext.User.Claims.FirstOrDefault(u => u.Type == ClaimTypes.NameIdentifier);
-            if (claimNameId is null)
-                return Guid.Empty;
-            
-            return Guid.Parse(claimNameId.Value);
+            return claimNameId is null ? Guid.Empty : Guid.Parse(claimNameId.Value);
         }
     }
 
@@ -44,6 +41,23 @@ public class UserController : Controller
     {
         _userRepository = userRepository;
         _environment = environment;
+    }
+    
+    /// <summary>
+    /// Получить список всех пользователей
+    /// </summary>
+    /// <returns><see cref="List{FriendLookup}"/></returns>
+    /// <response code="200">Запрос выполнен успешно</response>
+    /// <response code="500">Внутренняя ошибка сервера</response>
+    [AllowAnonymous]
+    [HttpGet("")]
+    [SwaggerResponse(statusCode: StatusCodes.Status200OK, type: typeof(GetUserByIdResponseDto))]
+    [SwaggerResponse(statusCode: StatusCodes.Status500InternalServerError, type: typeof(ErrorModel))]
+    public async Task<IActionResult> GetAll()
+    {
+        var result = await _userRepository.GetAll();
+            
+        return Ok(result);
     }
     
     /// <summary>

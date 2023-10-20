@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using lightning_shop.Application.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
@@ -25,6 +26,16 @@ public class UserRepository : IUserRepository
         _mapper = mapper;
         _uploader = uploader;
     }
+
+    public async Task<List<FriendLookup>> GetAll()
+    {
+        var users = await _dbContext.Users
+            .AsNoTracking()
+            .ProjectTo<FriendLookup>(_mapper.ConfigurationProvider)
+            .ToListAsync(CancellationToken.None);
+
+        return users.Count == 0 ? new List<FriendLookup>() : users;
+    }
     
     public async Task<GetUserByIdResponseDto> GetById(Guid userId, string hostUrl)
     {
@@ -36,7 +47,9 @@ public class UserRepository : IUserRepository
             throw new NotFoundException(user);
 
         var mappedUser = _mapper.Map<GetUserByIdResponseDto>(user);
-        
+
+        mappedUser.Friends = await MapFriends(user.FriendsIdList);
+
         return mappedUser;
     }
 
@@ -193,5 +206,26 @@ public class UserRepository : IUserRepository
     private static string UrlParse(string fileName, string hostUrl, Guid userId)
     {
         return UrlParser.Parse(hostUrl, userId.ToString(), fileName)!;
+    }
+
+    /// <summary>
+    /// Достаёт из БД и парсит друзей в <see cref="FriendLookup"/>
+    /// </summary>
+    /// <param name="friendsIdList">Список идентификаторов друзей, которых нужно маппить</param>
+    /// <returns><see cref="List{FriendLookup}"/></returns>
+    private async Task<List<FriendLookup>> MapFriends(List<Guid> friendsIdList)
+    {
+        List<FriendLookup> friends = new();
+
+        foreach (var friendId in friendsIdList)
+        {
+            var friend = await _dbContext.Users
+                .AsNoTracking()
+                .FirstOrDefaultAsync(u => u.Id == friendId, CancellationToken.None);
+            
+            friends.Add(_mapper.Map<FriendLookup>(friend));
+        }
+
+        return friends;
     }
 }

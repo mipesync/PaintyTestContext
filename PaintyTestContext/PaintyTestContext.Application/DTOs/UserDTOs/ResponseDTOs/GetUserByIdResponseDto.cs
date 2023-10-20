@@ -13,8 +13,9 @@ public class GetUserByIdResponseDto
     /// Почта пользователя
     /// </summary>
     public string Email { get; set; } = null!;
+
     /// <summary>
-    /// Количество друзей
+    /// Список друзей
     /// </summary>
-    public int FriendsCount { get; set; }
+    public List<FriendLookup> Friends { get; set; } = new();
 }
