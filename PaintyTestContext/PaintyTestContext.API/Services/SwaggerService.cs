@@ -36,7 +36,7 @@ namespace PaintyTestContext.Services
                 config.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
                     In = ParameterLocation.Header,
-                    Description = "Поместите токен доступа в поле ниже",
+                    Description = "Поместите токен доступа в формате \"Bearer token\" в поле ниже",
                     Name = "Authorization",
                     Type = SecuritySchemeType.ApiKey
                 });

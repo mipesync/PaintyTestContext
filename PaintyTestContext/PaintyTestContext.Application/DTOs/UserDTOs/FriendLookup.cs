@@ -6,6 +6,10 @@
 public class FriendLookup
 {
     /// <summary>
+    /// Идентификатор пользователя
+    /// </summary>
+    public Guid Id { get; set; }
+    /// <summary>
     /// Отображаемое имя пользователя
     /// </summary>
     public string DisplayedName { get; set; } = null!;

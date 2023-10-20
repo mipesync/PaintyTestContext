@@ -165,7 +165,7 @@ public class UserRepository : IUserRepository
             throw new NotFoundException(currentUser);
         
         var targetUser = await _dbContext.Users
-            .FirstOrDefaultAsync(u => u.Id == currentUserId, CancellationToken.None);
+            .FirstOrDefaultAsync(u => u.Id == friendId, CancellationToken.None);
         
         if (targetUser is null)
             throw new NotFoundException(targetUser);
